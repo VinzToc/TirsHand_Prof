@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a1428">
+<meta name="description" content="TirsHand Prof : cartes de tirs des équipes, projets tactiques et import des fichiers élèves (EPS · Handball).">
+<title>TirsHand Prof</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="entete">
+  <div class="titre"><img class="logo" src="./icons/icon-192.png" alt="" width="44" height="44"> <span>🤾 TirsHand <em class="tag-prof">Prof</em></span></div>
+  <a class="retour" href="https://vinztoc.github.io/Mes_Apps_EPS/">← Portail</a>
+</header>
+
+<nav class="onglets cinq" role="tablist" aria-label="Écrans">
+  <button class="onglet actif" data-ecran="match" role="tab">🏁<span>Match</span></button>
+  <button class="onglet" data-ecran="bilan" role="tab">🗺️<span>Bilan</span></button>
+  <button class="onglet" data-ecran="suivi" role="tab">📊<span>Suivi</span></button>
+  <button class="onglet" data-ecran="import" role="tab">📥<span>Import</span></button>
+  <button class="onglet" data-ecran="video" role="tab">🎥<span>Vidéo</span></button>
+</nav>
+
+<main>
+  <section id="ecran-match" class="ecran actif" aria-live="polite"></section>
+  <section id="ecran-bilan" class="ecran"></section>
+  <section id="ecran-suivi" class="ecran"></section>
+  <section id="ecran-import" class="ecran">
+    <div class="carte">
+      <h2>📥 Importer les fichiers des élèves</h2>
+      <p class="aide">Fichiers <b>Mes_donnees_EPS_NOM_Prenom.xlsx</b> exportés depuis l'appli élève TirsHand (bouton « Exporter mes résultats »). Vous pouvez en choisir plusieurs à la fois. Les tirs et les bilans sont rattachés aux élèves de Mes Apps EPS par nom, prénom et classe, sans doublon si un fichier est importé deux fois.</p>
+      <label class="depot" id="depot" for="imp-fichiers"><span class="grand">📂</span><b>Choisir ou déposer des fichiers .xlsx</b><span class="aide">Plusieurs fichiers acceptés</span></label>
+      <input type="file" id="imp-fichiers" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple hidden>
+      <label class="coche"><input type="checkbox" id="imp-creer"><span>Créer les élèves absents de ma liste (sinon leurs données sont ignorées)</span></label>
+      <div id="imp-journal" class="journal"></div>
+    </div>
+    <div class="carte">
+      <h2>👥 Liste des élèves</h2>
+      <p class="aide" id="liste-info"></p>
+      <label class="btn btn-accent" for="liste-fichier" style="display:inline-flex;align-items:center">👥 Charger la liste d'élèves (.xlsx / .csv)</label>
+      <input type="file" id="liste-fichier" accept=".xlsx,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+    </div>
+  </section>
+  <section id="ecran-video" class="ecran">
+    <div class="carte">
+      <h2>🎥 Vidéo différée</h2>
+      <p class="aide">L'écran montre l'action avec quelques secondes de retard : le joueur peut revenir voir son tir. <b>Rien n'est enregistré</b> : les images restent quelques secondes en mémoire puis disparaissent.</p>
+      <div class="ligne-boutons">
+        <button id="v-demarrer" class="btn btn-accent">📷 Démarrer la caméra</button>
+        <button id="v-effacer" class="btn btn-danger">🗑️ Effacer</button>
+      </div>
+      <div class="choix-titre">Retard de l'image</div>
+      <div class="ligne-boutons" id="v-delais">
+        <button class="btn choix" data-d="3">3 s</button>
+        <button class="btn choix sel" data-d="5">5 s</button>
+        <button class="btn choix" data-d="10">10 s</button>
+      </div>
+      <div class="video-zone">
+        <canvas id="v-canvas" width="640" height="360" aria-label="Image différée"></canvas>
+        <div id="v-etat" class="video-etat">Caméra arrêtée</div>
+      </div>
+      <div class="ligne-boutons">
+        <button id="v-ralenti" class="btn" disabled>🐢 Revoir au ralenti</button>
+        <button id="v-vitesse" class="btn" disabled>Vitesse ×0,5</button>
+        <button id="v-retour" class="btn" disabled>▶️ Retour au différé</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pied">
+  TirsHand Prof · Version <span id="version"></span> · données stockées uniquement sur cet appareil ·
+  <button id="lien-confid" class="lien">Confidentialité</button>
+</footer>
+
+<dialog id="confid" class="fenetre">
+  <h2>🔒 Confidentialité</h2>
+  <p><b>Données utilisées :</b> la liste des élèves de Mes Apps EPS (nom, prénom, classe), puis pour chaque tir la date, le match, la zone, le type de tir et le résultat, ainsi que le bilan des équipes (score, projet tactique, co-évaluation). Les fichiers importés sont ceux que les élèves exportent depuis l'appli TirsHand. <b>Finalité :</b> analyser les tirs des équipes et suivre leurs projets tactiques en EPS.</p>
+  <p><b>Stockage :</b> tout reste dans ce navigateur, dans la base locale de Mes Apps EPS. Il n'y a ni serveur, ni compte, ni cookie, ni statistiques de visite. Les données ne quittent l'appareil que si vous exportez vous-même un fichier.</p>
+  <p><b>Vidéo :</b> la caméra sert seulement à l'image différée. Aucune vidéo n'est enregistrée, envoyée ou conservée : les images restent quelques secondes en mémoire et sont effacées quand on quitte l'écran Vidéo.</p>
+  <p><b>Responsabilité :</b> l'appli est utilisée sous la responsabilité du chef d'établissement (responsable de traitement), qui l'inscrit au registre des traitements et assure l'information des familles.</p>
+  <p><b>Hébergement :</b> l'appli est téléchargée depuis GitHub Pages, qui enregistre l'adresse IP des visiteurs dans ses journaux techniques.</p>
+  <p><b>Effacement :</b> le bouton ci-dessous supprime toutes les données TirsHand (tirs, bilans) de tous les élèves sur cet appareil. La liste des élèves et les données des autres applis ne sont pas touchées.</p>
+  <div class="ligne-boutons">
+    <button id="btn-effacer-tout" class="btn btn-danger">🗑️ Effacer les données de l'appli</button>
+    <button class="btn" data-fermer>Fermer</button>
+  </div>
+</dialog>
+
+<dialog id="confirmer" class="fenetre petite">
+  <p id="confirmer-texte"></p>
+  <div class="ligne-boutons">
+    <button id="confirmer-oui" class="btn btn-danger">Oui</button>
+    <button id="confirmer-non" class="btn">Non, annuler</button>
+  </div>
+</dialog>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script src="./version.js"></script>
+<script src="./eps-core.js"></script>
+<script src="./app.js"></script>
+<script>
+document.getElementById('version').textContent = APP_VERSION;
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+</script>
+</body>
+</html>
