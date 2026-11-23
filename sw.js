@@ -1,7 +1,7 @@
 /* TirsHand Prof — service worker : réseau d'abord (délai 2,5 s), copie locale en secours */
 importScripts('./version.js');
 const CACHE = 'tirshand-prof-v' + APP_VERSION; // version définie dans version.js
-const FICHIERS = [
+const FICHIERS = ['nouveautes.js','nouveautes.json',
   './',
   './index.html',
   './version.js',
